@@ -8,7 +8,6 @@
 #include "Buzzer.h"
 #include "OLEDShow.h"
 
-/* ����ģʽ */
 #define MODE_NORMAL       0     /* ������ʾ */
 #define MODE_EDIT_TIME    1     /* �޸�ʱ�� */
 #define MODE_EDIT_ALARM   2     /* �޸����� */
