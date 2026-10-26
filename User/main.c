@@ -28,6 +28,7 @@ static uint8_t edit_field = 0;
 //修改1
 //修改2
 //修改5
+//修改6
 /* ��ʪ�� */
 static uint8_t temp_value = 0;
 static uint8_t hum_value = 0;
