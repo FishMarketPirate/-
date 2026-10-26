@@ -4,24 +4,22 @@
 #include "stm32f10x.h"
 #include "Time.h"
 
-/* ÏÔÊ¾Çı¶¯£º°ÑÊ±¼ä¡¢ÎÂÊª¶È¡¢ÄÖÖÓÒÔ¼°¸÷¸öÉèÖÃ½çÃæ·â×°ÆğÀ´£¬
- * Ö÷º¯ÊıÖ»ĞèÒªµ÷ÓÃÕâÀïµÄº¯Êı¼´¿É¡£ */
+//OLEDæ˜¾ç¤ºå°è£…ï¼Œä¸»å‡½æ•°åªè°ƒè¿™é‡Œï¼Œä¸ç›´æ¥æ“ä½œOLED
+void OLEDShow_Init(void);        //åˆå§‹åŒ–å¹¶æ¸…å±
 
-void OLEDShow_Init(void);        /* ³õÊ¼»¯ OLED ²¢ÇåÆÁ */
+//ä¸»ç•Œé¢
+void OLEDShow_ShowTime(RTC_TimeTypeDef *t);                          //æ—¥æœŸã€æ˜ŸæœŸã€æ—¶é—´
+void OLEDShow_ShowTempHum(uint8_t temp, uint8_t hum, uint8_t valid); //æ¸©æ¹¿åº¦ï¼Œvalid=0æ˜¾ç¤º--
+void OLEDShow_ShowAlarm(ALARM_TypeDef *a);                           //é—¹é’Ÿæ—¶é—´å’Œå¼€å…³
 
-/* Ö÷½çÃæ */
-void OLEDShow_ShowTime(RTC_TimeTypeDef *t);                  /* ÈÕÆÚ + ĞÇÆÚ + Ê±¼ä */
-void OLEDShow_ShowTempHum(uint8_t temp, uint8_t hum, uint8_t valid); /* ÎÂÊª¶È£¬valid=0 ÏÔÊ¾ -- */
-void OLEDShow_ShowAlarm(ALARM_TypeDef *a);                   /* ÄÖÖÓÊ±¼ä¼°¿ª¹Ø×´Ì¬ */
-
-/* ĞŞ¸Ä½çÃæ£¨field Ö¸¶¨µÄ×Ö¶ÎÓÃ [ ] ±ê³ö£© */
+//ç¼–è¾‘ç•Œé¢ï¼Œå½“å‰ä¿®æ”¹é¡¹ç”¨[]æ ‡å‡º
 void OLEDShow_EditTime(RTC_TimeTypeDef *t, uint8_t field);
 void OLEDShow_EditAlarm(ALARM_TypeDef *a, uint8_t field);
 
-/* ÄÖÖÓÏìÁåÊ±µÚ 4 ĞĞµÄÉÁË¸ÌáÊ¾ */
+//é—¹é’Ÿå“é“ƒæ—¶ç¬¬4è¡Œé—ªçƒ
 void OLEDShow_ShowRing(uint8_t visible);
 
-/* ÔÚµÚ 4 ĞĞÏÔÊ¾Ò»ĞĞÌáÊ¾ĞÅÏ¢ */
+//ç¬¬4è¡Œæ˜¾ç¤ºä¸€è¡Œæç¤º
 void OLEDShow_ShowMessage(char *msg);
 
 #endif

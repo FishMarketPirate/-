@@ -2,30 +2,26 @@
 #include "Time.h"
 #include "MyRTC.h"
 
-/* µ±Ç°Ê±¼ä¡¢ÄÖÖÓÉèÖÃ£¨ÄÖÖÓÄ¬ÈÏ 07:00£¬¹Ø±Õ£© */
+//å½“å‰æ—¶é—´ã€é—¹é’Ÿï¼ˆé»˜è®¤ 07:00ï¼Œå…³é—­ï¼‰
 RTC_TimeTypeDef now_time;
 ALARM_TypeDef alarm_cfg = {7, 0, 0};
 
-/* ÄÖÖÓ±£´æÔÚºó±¸¼Ä´æÆ÷£¨BKP_DR2~DR4£©£¬µôµç/¸´Î»ºó²»¶ªÊ§ */
+//é—¹é’Ÿå­˜åœ¨åå¤‡å¯„å­˜å™¨ï¼Œæ‰ç”µä¸ä¸¢
 #define ALARM_BKP_MAGIC        0x5AA5
 #define ALARM_BKP_REG_MAGIC    BKP_DR2
-#define ALARM_BKP_REG_TIME     BKP_DR3   /* ¸ß×Ö½Ú=Ê±£¬µÍ×Ö½Ú=·Ö */
+#define ALARM_BKP_REG_TIME     BKP_DR3   //é«˜å­—èŠ‚æ—¶ï¼Œä½å­—èŠ‚åˆ†
 #define ALARM_BKP_REG_ENABLE   BKP_DR4
 
-/* Ã¿¸öÔÂµÄÌìÊı£¨Æ½Äê£©£¬ÈòÄê 2 ÔÂµ¥¶À´¦Àí */
+//å¹³å¹´æ¯æœˆå¤©æ•°ï¼Œé—°å¹´2æœˆå•ç‹¬å¤„ç†
 static const uint8_t MonthDays[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-/**
-  * @brief  ÅĞ¶ÏÊÇ·ñÈòÄê
-  */
+//åˆ¤æ–­é—°å¹´
 uint8_t IsLeapYear(uint16_t y)
 {
     return (uint8_t)((y % 4 == 0 && y % 100 != 0) || (y % 400 == 0));
 }
 
-/**
-  * @brief  ·µ»ØÄ³ÄêÄ³ÔÂµÄÌìÊı
-  */
+//è¿”å›æŸå¹´æŸæœˆçš„å¤©æ•°
 uint8_t Time_DaysInMonth(uint16_t y, uint8_t m)
 {
     if (m < 1 || m > 12)
@@ -39,10 +35,7 @@ uint8_t Time_DaysInMonth(uint16_t y, uint8_t m)
     return MonthDays[m - 1];
 }
 
-/**
-  * @brief  ÓÉÄêÔÂÈÕ¼ÆËãĞÇÆÚ£¨0=ÖÜÈÕ£©
-  * @note   ²ÌÀÕ¹«Ê½£º½á¹û 0=ÖÜÁù£¬»»Ëã³É 0=ÖÜÈÕ
-  */
+//ç”±å¹´æœˆæ—¥ç®—æ˜ŸæœŸï¼Œ0=å‘¨æ—¥ï¼ˆè”¡å‹’å…¬å¼ï¼‰
 uint8_t Time_WeekDay(uint16_t y, uint8_t m, uint8_t d)
 {
     uint16_t k, j, h;
@@ -55,22 +48,17 @@ uint8_t Time_WeekDay(uint16_t y, uint8_t m, uint8_t d)
     k = y % 100;
     j = y / 100;
     h = (uint16_t)(d + (13 * (m + 1)) / 5 + k + k / 4 + j / 4 + 5 * j);
-    return (uint8_t)((h + 6) % 7);      /* 0=ÖÜÈÕ 1=ÖÜÒ» ... 6=ÖÜÁù */
+    return (uint8_t)((h + 6) % 7);
 }
 
-/**
-  * @brief  ³õÊ¼»¯£º¶Á³öµ±Ç°Ê±¼ä£¬²¢»Ö¸´ÄÖÖÓÉèÖÃ
-  * @note   ĞèÒªÏÈµ÷ÓÃ MyRTC_Init()
-  */
+//åˆå§‹åŒ–ï¼šè¯»æ—¶é—´ã€æ¢å¤é—¹é’Ÿï¼ˆè¦å…ˆè°ƒç”¨ MyRTC_Initï¼‰
 void Time_Init(void)
 {
     Time_Read(&now_time);
     Alarm_Load();
 }
 
-/**
-  * @brief  ´Ó RTC ¶ÁÈ¡Ê±¼äµ½½á¹¹Ìå
-  */
+//ä»RTCè¯»æ—¶é—´
 void Time_Read(RTC_TimeTypeDef *t)
 {
     MyRTC_ReadTime();
@@ -84,9 +72,7 @@ void Time_Read(RTC_TimeTypeDef *t)
     t->week  = Time_WeekDay(t->year, t->month, t->day);
 }
 
-/**
-  * @brief  °Ñ½á¹¹ÌåÖĞµÄÊ±¼äĞ´Èë RTC
-  */
+//æŠŠæ—¶é—´å†™å…¥RTC
 void Time_Set(RTC_TimeTypeDef *t)
 {
     MyRTC_Time[0] = t->year;
@@ -100,10 +86,7 @@ void Time_Set(RTC_TimeTypeDef *t)
     t->week = Time_WeekDay(t->year, t->month, t->day);
 }
 
-/**
-  * @brief  ÔÚ±à¼­½çÃæµ÷ÕûÊ±¼ä×Ö¶Î£¨±àÂëÆ÷Õı×ª step>0£¬·´×ª step<0£©
-  * @param  field ×Ö¶Î±àºÅ TIME_FIELD_xxx
-  */
+//è°ƒæ•´æ—¶é—´å­—æ®µï¼Œstep>0æ­£è½¬ï¼Œ<0åè½¬
 void Time_Adjust(RTC_TimeTypeDef *t, uint8_t field, int16_t step)
 {
     int16_t v;
@@ -117,11 +100,10 @@ void Time_Adjust(RTC_TimeTypeDef *t, uint8_t field, int16_t step)
     switch (field)
     {
         case TIME_FIELD_YEAR:
-            /* ÏÈ°ÑÔ½½çÄê·İÀ­»ØºÏ·¨Çø¼ä£¬ÔÙµ÷Õû */
+            //è¶Šç•Œå…ˆæ‹‰å›æ¥ï¼›èŒƒå›´2000~2037ï¼Œé¿å…2038å¹´time_tæº¢å‡º
             if (t->year < 2000) t->year = 2000;
             if (t->year > 2037) t->year = 2037;
             v = (int16_t)(t->year + step);
-            /* ÏŞÖÆÔÚ 2000~2037£¬±ÜÃâ 32 Î» time_t ÔÚ 2038 ÄêÒç³ö */
             while (v > 2037) v -= 38;
             while (v < 2000) v += 38;
             t->year = (uint16_t)v;
@@ -167,7 +149,7 @@ void Time_Adjust(RTC_TimeTypeDef *t, uint8_t field, int16_t step)
             break;
     }
 
-    /* µ÷ÕûÄê/ÔÂºó£¬ÈÕÆÚ²»ÄÜ³¬¹ıµ±ÔÂ×î´óÌìÊı */
+    //æ”¹å®Œå¹´/æœˆï¼Œæ—¥æœŸä¸èƒ½è¶…è¿‡å½“æœˆå¤©æ•°
     dim = Time_DaysInMonth(t->year, t->month);
     if (t->day > dim)
     {
@@ -180,9 +162,7 @@ void Time_Adjust(RTC_TimeTypeDef *t, uint8_t field, int16_t step)
     t->week = Time_WeekDay(t->year, t->month, t->day);
 }
 
-/**
-  * @brief  ÔÚ±à¼­½çÃæµ÷ÕûÄÖÖÓ×Ö¶Î
-  */
+//è°ƒæ•´é—¹é’Ÿå­—æ®µ
 void Alarm_Adjust(ALARM_TypeDef *a, uint8_t field, int16_t step)
 {
     int16_t v;
@@ -209,7 +189,7 @@ void Alarm_Adjust(ALARM_TypeDef *a, uint8_t field, int16_t step)
             break;
 
         case ALARM_FIELD_ENABLE:
-            /* ÓÒ×ª´ò¿ª£¬×ó×ª¹Ø±Õ */
+            //å³è½¬å¼€ï¼Œå·¦è½¬å…³
             a->enable = (step > 0) ? 1 : 0;
             break;
 
@@ -218,9 +198,7 @@ void Alarm_Adjust(ALARM_TypeDef *a, uint8_t field, int16_t step)
     }
 }
 
-/**
-  * @brief  ´Óºó±¸¼Ä´æÆ÷»Ö¸´ÄÖÖÓÉèÖÃ
-  */
+//ä»åå¤‡å¯„å­˜å™¨è¯»é—¹é’Ÿ
 void Alarm_Load(void)
 {
     if (BKP_ReadBackupRegister(ALARM_BKP_REG_MAGIC) == ALARM_BKP_MAGIC)
@@ -235,7 +213,7 @@ void Alarm_Load(void)
     }
     else
     {
-        /* µÚÒ»´ÎÉÏµç£ºÊ¹ÓÃÄ¬ÈÏÉèÖÃ²¢±£´æ */
+        //ç¬¬ä¸€æ¬¡ä¸Šç”µï¼Œç”¨é»˜è®¤å€¼
         alarm_cfg.hour = 7;
         alarm_cfg.min = 0;
         alarm_cfg.enable = 0;
@@ -243,12 +221,9 @@ void Alarm_Load(void)
     }
 }
 
-/**
-  * @brief  °ÑÄÖÖÓÉèÖÃ±£´æµ½ºó±¸¼Ä´æÆ÷
-  */
+//ä¿å­˜é—¹é’Ÿï¼šå…ˆå†™æ•°æ®ï¼Œæœ€åå†™magicï¼Œé˜²æ­¢æ‰ç”µåæ•°æ®ä¸ä¸€è‡´
 void Alarm_Save(void)
 {
-    /* ÏÈĞ´Êı¾İ¡¢×îºóĞ´ magic£¬±ÜÃâ±£´æ¹ı³ÌÖĞµôµçºó magic ÓĞĞ§µ«Êı¾İÊÇ¾ÉÖµ */
     BKP_WriteBackupRegister(ALARM_BKP_REG_TIME, (uint16_t)(((uint16_t)alarm_cfg.hour << 8) | alarm_cfg.min));
     BKP_WriteBackupRegister(ALARM_BKP_REG_ENABLE, alarm_cfg.enable);
     BKP_WriteBackupRegister(ALARM_BKP_REG_MAGIC, ALARM_BKP_MAGIC);

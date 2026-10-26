@@ -4,6 +4,7 @@
 
 uint8_t rec_data[4];
 
+//æ•°æ®è„šåˆ‡è¾“å‡º
 void DH11_Out_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -15,17 +16,19 @@ void DH11_Out_Init(void)
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
+//æ•°æ®è„šåˆ‡è¾“å…¥ï¼Œä¸Šæ‹‰
 void DH11_In_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;   /* ÉÏÀ­ÊäÈë£¬´«¸ĞÆ÷Î´½ÓÊ±×ÜÏß±£³Ö¸ßµçÆ½ */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 
+//èµ·å§‹ä¿¡å·ï¼šä¸»æœºæ‹‰ä½è‡³å°‘18msï¼Œå†é‡Šæ”¾ç­‰å“åº”
 void DH11_Start(void)
 {
     DH11_Out_Init();
@@ -33,19 +36,16 @@ void DH11_Start(void)
     dht11_high;
     Delay_us(30);
 
-    dht11_low;              /* Ö÷»úÀ­µÍÖÁÉÙ 18ms ×÷ÎªÆğÊ¼ĞÅºÅ */
+    dht11_low;
     Delay_ms(20);
 
-    dht11_high;             /* ÊÍ·Å×ÜÏß£¬µÈ´ı DHT11 ÏìÓ¦ */
+    dht11_high;
     Delay_us(30);
 
     DH11_In_Init();
 }
 
-/**
-  * @brief  µÈ´ı×ÜÏßµçÆ½Àë¿ª level
-  * @retval 1=µÈµ½£¬0=³¬Ê±£¨Ô¼ 1ms£©£¬ÓÃÓÚ·ÀÖ¹´«¸ĞÆ÷Ã»½ÓÊ±³ÌĞò¿¨ËÀ
-  */
+//ç­‰ç”µå¹³ç¦»å¼€levelï¼Œè¶…æ—¶è¿”å›0ï¼Œé˜²æ­¢ä¼ æ„Ÿå™¨æ²¡æ¥æ—¶å¡æ­»
 static uint8_t DH11_WaitLevel(uint8_t level)
 {
     uint16_t timeout = 6000;
@@ -60,9 +60,7 @@ static uint8_t DH11_WaitLevel(uint8_t level)
     return 1;
 }
 
-/**
-  * @brief  ½ÓÊÕÒ»¸ö×Ö½Ú£¨DHT11 ¸ßÎ»ÔÚÇ°£©
-  */
+//æ”¶ä¸€ä¸ªå­—èŠ‚ï¼Œé«˜ä½åœ¨å‰
 char DH11_Rec_Byte(void)
 {
     uint8_t i;
@@ -70,19 +68,19 @@ char DH11_Rec_Byte(void)
 
     for (i = 0; i < 8; i++)
     {
-        if (!DH11_WaitLevel(0))         /* µÈ´ı 50us µÍµçÆ½½áÊø */
+        if (!DH11_WaitLevel(0))        //ç­‰50usä½ç”µå¹³ç»“æŸ
         {
             return (char)data;
         }
 
-        Delay_us(40);                    /* ¸ßµçÆ½Ê±³¤¾ö¶¨Êı¾İÊÇ 0 »¹ÊÇ 1 */
+        Delay_us(40);                   //40usåè¿˜æ˜¯é«˜å°±æ˜¯1
         data <<= 1;
         if (Read_Data == 1)
         {
             data |= 1;
         }
 
-        if (!DH11_WaitLevel(1))          /* µÈ´ı¸ßµçÆ½½áÊø */
+        if (!DH11_WaitLevel(1))         //ç­‰é«˜ç”µå¹³ç»“æŸ
         {
             return (char)data;
         }
@@ -90,25 +88,22 @@ char DH11_Rec_Byte(void)
     return (char)data;
 }
 
-/**
-  * @brief  ¶ÁÈ¡Ò»´ÎÎÂÊª¶ÈÊı¾İ
-  * @retval 1=³É¹¦£¬0=Ê§°Ü
-  */
+//è¯»ä¸€æ¬¡æ¸©æ¹¿åº¦ï¼Œ1æˆåŠŸï¼Œ0å¤±è´¥
 uint8_t DH11_Rec_Data(void)
 {
     uint8_t RH, RL, TH, TL, CHECK;
 
     DH11_Start();
 
-    if (!DH11_WaitLevel(1))         /* µÈ´ı DHT11 À­µÍÏìÓ¦ */
+    if (!DH11_WaitLevel(1))        //ç­‰DHT11æ‹‰ä½å“åº”
     {
         return 0;
     }
-    if (!DH11_WaitLevel(0))         /* ÏìÓ¦µÍµçÆ½½áÊø */
+    if (!DH11_WaitLevel(0))        //ç­‰å“åº”ä½ç”µå¹³ç»“æŸ
     {
         return 0;
     }
-    if (!DH11_WaitLevel(1))         /* ÏìÓ¦¸ßµçÆ½½áÊø */
+    if (!DH11_WaitLevel(1))        //ç­‰å“åº”é«˜ç”µå¹³ç»“æŸ
     {
         return 0;
     }
@@ -119,8 +114,7 @@ uint8_t DH11_Rec_Data(void)
     TL    = (uint8_t)DH11_Rec_Byte();
     CHECK = (uint8_t)DH11_Rec_Byte();
 
-    /* ¶ÁÈ¡Íê³ÉºóÒı½ÅÒÑÇĞ»ØÊäÈëÄ£Ê½£¬×ÜÏßÓÉÍâ²¿ÉÏÀ­À­¸ß£¬ÎŞĞèÔÙÇı¶¯ */
-
+    //å¼•è„šå·²åˆ‡å›è¾“å…¥ï¼Œæ€»çº¿ç”±å¤–éƒ¨ä¸Šæ‹‰æ‹‰é«˜
     if ((uint8_t)(RH + RL + TH + TL) != CHECK)
     {
         return 0;

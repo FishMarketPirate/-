@@ -2,22 +2,17 @@
 #include "OLED.h"
 #include "OLEDShow.h"
 
-/* ĞÇÆÚÃû³Æ£¬Ë÷ÒıÓë Time_WeekDay() µÄ·µ»ØÖµ¶ÔÓ¦£º0=ÖÜÈÕ */
+//æ˜ŸæœŸåç§°ï¼Œ0=å‘¨æ—¥
 static char WeekName[7][4] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
 
-/**
-  * @brief  OLED ÏÔÊ¾·â×°³õÊ¼»¯
-  */
+//åˆå§‹åŒ–å¹¶æ¸…å±
 void OLEDShow_Init(void)
 {
     OLED_Init();
     OLED_Clear();
 }
 
-/**
-  * @brief  ´ÓµÚ col ÁĞ¿ªÊ¼ÓÃ¿Õ¸ñÇå³ıµ½ĞĞÎ²£¨col ·¶Î§ 1~16£©
-  * @note   ÓÃÀ´·ÀÖ¹ÉÏÒ»ÆÁ½Ï³¤µÄÄÚÈİ²ĞÁô
-  */
+//ä»ç¬¬colåˆ—æ¸…åˆ°è¡Œå°¾ï¼Œé˜²æ­¢ä¸Šä¸€å±é•¿å†…å®¹æ®‹ç•™
 static void OLEDShow_ClearToEnd(uint8_t line, uint8_t col)
 {
     while (col <= 16)
@@ -27,9 +22,7 @@ static void OLEDShow_ClearToEnd(uint8_t line, uint8_t col)
     }
 }
 
-/**
-  * @brief  Ö÷½çÃæÏÔÊ¾ÈÕÆÚ¡¢ĞÇÆÚºÍÊ±¼ä
-  */
+//æ˜¾ç¤ºæ—¥æœŸã€æ˜ŸæœŸã€æ—¶é—´
 void OLEDShow_ShowTime(RTC_TimeTypeDef *t)
 {
     uint8_t week = t->week;
@@ -39,7 +32,7 @@ void OLEDShow_ShowTime(RTC_TimeTypeDef *t)
         week = 0;
     }
 
-    /* µÚ 1 ĞĞ£º2026-10-25 SUN */
+    //ç¬¬1è¡Œï¼š2026-10-25 SUN
     OLED_ShowNum(1, 1, t->year, 4);
     OLED_ShowChar(1, 5, '-');
     OLED_ShowNum(1, 6, t->month, 2);
@@ -47,7 +40,7 @@ void OLEDShow_ShowTime(RTC_TimeTypeDef *t)
     OLED_ShowNum(1, 9, t->day, 2);
     OLED_ShowString(1, 12, WeekName[week]);
 
-    /* µÚ 2 ĞĞ£ºTIME 20:31:55 */
+    //ç¬¬2è¡Œï¼šTIME 20:31:55
     OLED_ShowString(2, 1, "TIME ");
     OLED_ShowNum(2, 6, t->hour, 2);
     OLED_ShowChar(2, 8, ':');
@@ -55,15 +48,12 @@ void OLEDShow_ShowTime(RTC_TimeTypeDef *t)
     OLED_ShowChar(2, 11, ':');
     OLED_ShowNum(2, 12, t->sec, 2);
 
-    /* ÇåµôĞĞÎ²£¬·ÀÖ¹´Ó±à¼­½çÃæ·µ»ØÊ±²ĞÁô×Ö·û */
+    //æ¸…æ‰è¡Œå°¾ï¼Œé˜²æ­¢ä»ç¼–è¾‘ç•Œé¢å›æ¥æ®‹ç•™å­—ç¬¦
     OLEDShow_ClearToEnd(1, 15);
     OLEDShow_ClearToEnd(2, 14);
 }
 
-/**
-  * @brief  Ö÷½çÃæÏÔÊ¾ÎÂ¶È¡¢Êª¶È
-  * @param  valid Îª 0 Ê±±íÊ¾±¾´ÎÃ»ÓĞ¶Áµ½ÓĞĞ§Êı¾İ£¬ÏÔÊ¾ --
-  */
+//æ˜¾ç¤ºæ¸©æ¹¿åº¦ï¼Œvalid=0æ—¶æ˜¾ç¤º--
 void OLEDShow_ShowTempHum(uint8_t temp, uint8_t hum, uint8_t valid)
 {
     uint8_t col;
@@ -78,13 +68,13 @@ void OLEDShow_ShowTempHum(uint8_t temp, uint8_t hum, uint8_t valid)
         OLED_ShowString(3, 3, "--");
     }
     OLED_ShowChar(3, 5, 'C');
-    OLED_ShowChar(3, 6, ' ');       /* ¹Ì¶¨µÚ 6 ÁĞÎª¿Õ¸ñ£¬·ÀÖ¹±à¼­½çÃæ²ĞÁô */
+    OLED_ShowChar(3, 6, ' ');       //ç¬¬6åˆ—å›ºå®šç©ºæ ¼ï¼Œé˜²æ­¢ç¼–è¾‘ç•Œé¢æ®‹ç•™
 
     OLED_ShowString(3, 7, "H:");
     col = 9;
     if (valid)
     {
-        if (hum >= 100)             /* Êª¶È 100% Ê±ÓÃ 3 Î»ÏÔÊ¾£¬±ÜÃâÏÔÊ¾³É 00 */
+        if (hum >= 100)             //æ¹¿åº¦100%ç”¨3ä½æ˜¾ç¤ºï¼Œä¸ç„¶ä¼šæ˜¾ç¤ºæˆ00
         {
             OLED_ShowNum(3, col, hum, 3);
             col += 3;
@@ -102,12 +92,10 @@ void OLEDShow_ShowTempHum(uint8_t temp, uint8_t hum, uint8_t valid)
     }
     OLED_ShowChar(3, col, '%');
     col++;
-    OLEDShow_ClearToEnd(3, col);     /* ÇåµôĞĞÎ² */
+    OLEDShow_ClearToEnd(3, col);     //æ¸…æ‰è¡Œå°¾
 }
 
-/**
-  * @brief  Ö÷½çÃæÏÔÊ¾ÄÖÖÓÊ±¼äÓë¿ª¹Ø×´Ì¬
-  */
+//æ˜¾ç¤ºé—¹é’Ÿæ—¶é—´å’Œå¼€å…³çŠ¶æ€
 void OLEDShow_ShowAlarm(ALARM_TypeDef *a)
 {
     OLED_ShowString(4, 1, "ALM:");
@@ -123,22 +111,19 @@ void OLEDShow_ShowAlarm(ALARM_TypeDef *a)
     {
         OLED_ShowString(4, 11, "OFF");
     }
-    OLEDShow_ClearToEnd(4, 14);     /* ÇåµôĞĞÎ² */
+    OLEDShow_ClearToEnd(4, 14);     //æ¸…æ‰è¡Œå°¾
 }
 
-/**
-  * @brief  Ê±¼äÉèÖÃ½çÃæ
-  * @param  field µ±Ç°ÕıÔÚĞŞ¸ÄµÄ×Ö¶Î£¬ÓÃ [ ] ±ê³ö
-  */
+//æ—¶é—´è®¾ç½®ç•Œé¢ï¼Œfieldæ˜¯å½“å‰ä¿®æ”¹é¡¹
 void OLEDShow_EditTime(RTC_TimeTypeDef *t, uint8_t field)
 {
     uint8_t col;
 
-    /* µÚ 1 ĞĞ£º±êÌâ */
+    //ç¬¬1è¡Œæ ‡é¢˜
     OLED_ShowString(1, 1, "EDIT TIME");
     OLEDShow_ClearToEnd(1, 10);
 
-    /* µÚ 2 ĞĞ£ºÈÕÆÚ£¬ÀıÈç [2026]-10-25 */
+    //ç¬¬2è¡Œæ—¥æœŸï¼Œå¦‚[2026]-10-25
     col = 1;
     if (field == TIME_FIELD_YEAR)
     {
@@ -176,7 +161,7 @@ void OLEDShow_EditTime(RTC_TimeTypeDef *t, uint8_t field)
     }
     OLEDShow_ClearToEnd(2, col);
 
-    /* µÚ 3 ĞĞ£ºÊ±¼ä£¬ÀıÈç 20:[31]:55 */
+    //ç¬¬3è¡Œæ—¶é—´ï¼Œå¦‚20:[31]:55
     col = 1;
     if (field == TIME_FIELD_HOUR)
     {
@@ -214,24 +199,21 @@ void OLEDShow_EditTime(RTC_TimeTypeDef *t, uint8_t field)
     }
     OLEDShow_ClearToEnd(3, col);
 
-    /* µÚ 4 ĞĞ£º²Ù×÷ÌáÊ¾ */
+    //ç¬¬4è¡Œæ“ä½œæç¤º
     OLED_ShowString(4, 1, "K1:SAVE K2:NEXT");
     OLEDShow_ClearToEnd(4, 16);
 }
 
-/**
-  * @brief  ÄÖÖÓÉèÖÃ½çÃæ
-  * @param  field µ±Ç°ÕıÔÚĞŞ¸ÄµÄ×Ö¶Î£¬ÓÃ [ ] ±ê³ö
-  */
+//é—¹é’Ÿè®¾ç½®ç•Œé¢ï¼Œfieldæ˜¯å½“å‰ä¿®æ”¹é¡¹
 void OLEDShow_EditAlarm(ALARM_TypeDef *a, uint8_t field)
 {
     uint8_t col;
 
-    /* µÚ 1 ĞĞ£º±êÌâ */
+    //ç¬¬1è¡Œæ ‡é¢˜
     OLED_ShowString(1, 1, "EDIT ALARM");
     OLEDShow_ClearToEnd(1, 11);
 
-    /* µÚ 2 ĞĞ£ºALARM [07]:30 */
+    //ç¬¬2è¡Œï¼šALARM [07]:30
     OLED_ShowString(2, 1, "ALARM ");
     col = 7;
     if (field == ALARM_FIELD_HOUR)
@@ -258,7 +240,7 @@ void OLEDShow_EditAlarm(ALARM_TypeDef *a, uint8_t field)
     }
     OLEDShow_ClearToEnd(2, col);
 
-    /* µÚ 3 ĞĞ£º¿ª¹Ø×´Ì¬£¨¹Ì¶¨ 5 ¸ö×Ö·û¿í¶È£¬±ÜÃâÇĞ»»ĞŞ¸ÄÏîÊ±²ĞÁô£© */
+    //ç¬¬3è¡Œå¼€å…³ï¼Œå›ºå®š5ä¸ªå­—ç¬¦å®½ï¼Œåˆ‡æ¢ä¿®æ”¹é¡¹æ—¶ä¸æ®‹ç•™
     OLED_ShowString(3, 1, "SWITCH ");
     col = 8;
     if (field == ALARM_FIELD_ENABLE)
@@ -285,15 +267,12 @@ void OLEDShow_EditAlarm(ALARM_TypeDef *a, uint8_t field)
     }
     OLEDShow_ClearToEnd(3, (uint8_t)(col + 5));
 
-    /* µÚ 4 ĞĞ£º²Ù×÷ÌáÊ¾ */
+    //ç¬¬4è¡Œæ“ä½œæç¤º
     OLED_ShowString(4, 1, "K1:SAVE K2:NEXT");
     OLEDShow_ClearToEnd(4, 16);
 }
 
-/**
-  * @brief  ÄÖÖÓÏìÁåÊ±µÚ 4 ĞĞÉÁË¸
-  * @param  visible 1=ÏÔÊ¾ÌáÊ¾£¬0=Çå³ı
-  */
+//å“é“ƒæ—¶ç¬¬4è¡Œé—ªçƒ
 void OLEDShow_ShowRing(uint8_t visible)
 {
     if (visible)
@@ -307,9 +286,7 @@ void OLEDShow_ShowRing(uint8_t visible)
     }
 }
 
-/**
-  * @brief  ÔÚµÚ 4 ĞĞÏÔÊ¾Ò»ĞĞÌáÊ¾ĞÅÏ¢£¨ºóÃæÓÃ¿Õ¸ñ²¹Æë£©
-  */
+//ç¬¬4è¡Œæ˜¾ç¤ºæç¤ºï¼Œåé¢ç”¨ç©ºæ ¼è¡¥é½
 void OLEDShow_ShowMessage(char *msg)
 {
     uint8_t col = 1;

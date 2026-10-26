@@ -3,17 +3,12 @@
 #include "Delay.h"
 #include "MyRTC.h"
 
-/* ÏÔÊ¾Ê±¼ä±È RTC ¼ÆÊıÆ÷¿ì 8 Ğ¡Ê±£¨¶«°ËÇø£©¡£
- * ¶ÁÈ¡Ê± +8h¡¢Ğ´ÈëÊ± -8h£¬Á½Õß»¥ÏàµÖÏû£¬±£Ö¤ÉèÖÃºó¶Á»ØµÄÊ±¼ä×¼È·¡£ */
+//æ˜¾ç¤ºæ—¶é—´æ¯”è®¡æ•°å™¨å¿«8å°æ—¶ï¼Œè¯»çš„æ—¶å€™åŠ ã€å†™çš„æ—¶å€™å‡
 #define TZ_OFFSET_SEC   (8 * 60 * 60)
 
 uint16_t MyRTC_Time[] = {2026,10,25,21,31,55};
 
-/**
-  * @brief  ¶ÁÈ¡ RTC ¼ÆÊıÆ÷
-  * @note   ¿âº¯Êı RTC_GetCounter() ÏÈ¶Á CNTL ÔÙ¶Á CNTH£¬ÈôÔÚ CNTL ½øÎ»Ë²¼ä¶ÁÈ¡
-  *         »áµÃµ½Ò»¸öÆ«´ó 65536 Ãë£¨Ô¼ 18 Ğ¡Ê±£©µÄÖµ¡£ÕâÀï¶ÁÁ½´Î CNTH ×öĞ£Ñé¡£
-  */
+//è¯»RTCè®¡æ•°å™¨ï¼Œè¯»ä¸¤æ¬¡CNTHï¼Œé˜²æ­¢è¿›ä½æ—¶è¯»é”™
 uint32_t MyRTC_GetCounter(void)
 {
 	uint32_t high1, high2, low;
@@ -28,10 +23,7 @@ uint32_t MyRTC_GetCounter(void)
 	return (high1 << 16) | (low & 0xFFFF);
 }
 
-/**
-  * @brief  µÈ´ı RCC ±êÖ¾ÖÃÎ»£¨´ø³¬Ê±£©
-  * @retval 1=ÖÃÎ» 0=³¬Ê±
-  */
+//ç­‰RCCæ ‡å¿—ç½®ä½ï¼Œå¸¦è¶…æ—¶
 static uint8_t MyRTC_WaitFlag(uint8_t flag, uint16_t timeout_ms)
 {
 	uint16_t t = 0;
@@ -44,10 +36,7 @@ static uint8_t MyRTC_WaitFlag(uint8_t flag, uint16_t timeout_ms)
 	return (RCC_GetFlagStatus(flag)==SET) ? 1 : 0;
 }
 
-/**
-  * @brief  µÈ´ı RTC ¼Ä´æÆ÷Í¬²½£¨´ø³¬Ê±£©
-  * @retval 1=Í¬²½Íê³É 0=³¬Ê±
-  */
+//ç­‰RTCå¯„å­˜å™¨åŒæ­¥ï¼Œå¸¦è¶…æ—¶
 static uint8_t MyRTC_WaitSynchro(uint16_t timeout_ms)
 {
 	uint16_t t = 0;
@@ -60,9 +49,7 @@ static uint8_t MyRTC_WaitSynchro(uint16_t timeout_ms)
 	return (RTC_GetFlagStatus(RTC_FLAG_RSF)==SET) ? 1 : 0;
 }
 
-/**
-  * @brief  µÈ´ı RTC ÉÏÒ»´ÎĞ´²Ù×÷Íê³É£¨´ø³¬Ê±£¬±ÜÃâ RTC Ã»ÓĞÊ±ÖÓÊ±ËÀµÈ£©
-  */
+//ç­‰RTCä¸Šä¸€æ¬¡å†™å®Œæˆï¼Œå¸¦è¶…æ—¶
 static void MyRTC_WaitLastTask(void)
 {
 	uint16_t t = 100;
@@ -74,16 +61,13 @@ static void MyRTC_WaitLastTask(void)
 	}
 }
 
-/**
-  * @brief  ÅäÖÃ±¸·İÓòºÍ RTC Ê±ÖÓ£¨Ö»ÔÚÊ×´ÎÉÏµç»ò±¸·İÓòÒì³£Ê±µ÷ÓÃ£©
-  * @note   ÓÅÏÈÊ¹ÓÃÍâ²¿ 32.768kHz ¾§Õñ£¬×î¶àµÈ 5 Ãë£»²»ÆğÕñÔòÍË»ØÄÚ²¿ LSI¡£
-  */
+//é…ç½®å¤‡ä»½åŸŸå’ŒRTCæ—¶é’Ÿï¼šå…ˆè¯•LSEï¼Œ5ç§’ä¸èµ·æŒ¯å°±ç”¨LSI
 static void MyRTC_ConfigBackupDomain(void)
 {
 	uint16_t wait_ms = 0;
 	uint16_t prescaler;
 
-	/* ´ò¿ªÍâ²¿ 32.768kHz ¾§Õñ²¢µÈ´ıÆğÕñ */
+	//æ‰“å¼€å¤–éƒ¨32.768kHzæ™¶æŒ¯
 	RCC_LSEConfig(RCC_LSE_ON);
 	while(RCC_GetFlagStatus(RCC_FLAG_LSERDY)!=SET && wait_ms<5000)
 	{
@@ -98,12 +82,12 @@ static void MyRTC_ConfigBackupDomain(void)
 	}
 	else
 	{
-		/* ¾§Õñ²»ÆğÕñ£ºÍË»ØÄÚ²¿ LSI£¨¾«¶È½ÏµÍ£¬µ«²»»áÉÏµçºÚÆÁËÀ»ú£© */
+		//æ™¶æŒ¯æ²¡èµ·æ¥ï¼Œç”¨å†…éƒ¨LSIï¼Œç²¾åº¦ä½ä½†ä¸é»‘å±
 		RCC_LSEConfig(RCC_LSE_OFF);
 		RCC_LSICmd(ENABLE);
 		while(RCC_GetFlagStatus(RCC_FLAG_LSIRDY)!=SET);
 		RCC_RTCCLKConfig(RCC_RTCCLKSource_LSI);
-		prescaler = 40000-1;		/* LSI Ô¼ 40kHz */
+		prescaler = 40000-1;
 	}
 
 	RCC_RTCCLKCmd(ENABLE);
@@ -111,16 +95,16 @@ static void MyRTC_ConfigBackupDomain(void)
 	MyRTC_WaitSynchro(500);
 	MyRTC_WaitLastTask();
 
-	/* ·ÖÆµ */
+	//åˆ†é¢‘
 	RTC_SetPrescaler(prescaler);
 	MyRTC_WaitLastTask();
 
-	/* °Ñ MyRTC_Time ÀïµÄ³õÊ¼Ê±¼äĞ´Èë RTC */
+	//å†™åˆå§‹æ—¶é—´ï¼Œè®°ä¸‹å·²åˆå§‹åŒ–æ ‡å¿—
 	MyRTC_SetTime();
-
 	BKP_WriteBackupRegister(BKP_DR1,0xA5A5);
 }
 
+//RTCåˆå§‹åŒ–
 void MyRTC_Init(void)
 {
 	uint32_t rtcsel;
@@ -132,8 +116,7 @@ void MyRTC_Init(void)
 
 	if(BKP_ReadBackupRegister(BKP_DR1)==0xA5A5)
 	{
-		/* ±¸·İÓòÒÑÓĞÊ±¼ä£ºÈ·ÈÏ RTC Ê±ÖÓÔ´ÊÇ·ñÈÔÔÚÕñµ´¡£
-		 * ×¢Òâ LSI µÄ LSION Î»ÔÚÏµÍ³¸´Î»ºó»á±»ÇåÁã£¬Èô²»ÖØĞÂ´ò¿ª£¬RTC »áÍ£×ß¡£ */
+		//å¤‡ä»½åŸŸå·²æœ‰æ—¶é—´ï¼Œç¡®è®¤æ—¶é’Ÿæºè¿˜åœ¨æŒ¯è¡
 		uint8_t clock_ok = 0;
 
 		rtcsel = RCC->BDCR & RCC_BDCR_RTCSEL;
@@ -145,6 +128,7 @@ void MyRTC_Init(void)
 		}
 		else if(rtcsel==RCC_BDCR_RTCSEL_LSI)
 		{
+			//LSIå¤ä½åLSIONä¼šæ¸…é›¶ï¼Œè¦é‡æ–°æ‰“å¼€
 			RCC_LSICmd(ENABLE);
 			clock_ok = MyRTC_WaitFlag(RCC_FLAG_LSIRDY, 1000);
 		}
@@ -160,20 +144,21 @@ void MyRTC_Init(void)
 			if(MyRTC_WaitSynchro(500))
 			{
 				MyRTC_WaitLastTask();
-				return;			/* RTC Õı³££¬ÑØÓÃÔ­À´µÄÊ±¼äºÍÄÖÖÓ */
+				return;			//RTCæ­£å¸¸ï¼Œæ²¿ç”¨åŸæ¥çš„æ—¶é—´
 			}
 		}
 
-		/* Ê±ÖÓÔ´Òì³££º¸´Î»±¸·İÓòºóÖØĞÂ³õÊ¼»¯£¨Ê±¼ä»á»Øµ½³õÊ¼Öµ£© */
+		//æ—¶é’Ÿæºå¼‚å¸¸ï¼Œå¤ä½å¤‡ä»½åŸŸé‡æ–°åˆå§‹åŒ–
 		BKP_DeInit();
 		PWR_BackupAccessCmd(ENABLE);
 	}
 
-	/* Ê×´ÎÉÏµç»ò±¸·İÓò¸Õ±»¸´Î»£ºÖØĞÂÅäÖÃ LSE/LSI¡¢Ô¤·ÖÆµºÍ³õÊ¼Ê±¼ä */
+	//é¦–æ¬¡ä¸Šç”µæˆ–å¤‡ä»½åŸŸåˆšå¤ä½
 	MyRTC_ConfigBackupDomain();
 }
 
 
+//æŠŠMyRTC_Timeå†™å…¥RTC
 void MyRTC_SetTime(void)
 {
 	time_t time_cnt;
@@ -185,11 +170,11 @@ void MyRTC_SetTime(void)
 	time_date.tm_hour = MyRTC_Time[3];
 	time_date.tm_min = MyRTC_Time[4];
 	time_date.tm_sec = MyRTC_Time[5];
-	time_date.tm_wday = 0;		/* ÏÂÃæÈı¸ö³ÉÔ±±ØĞë³õÊ¼»¯£¬·ñÔò mktime ½á¹û²»È·¶¨ */
+	time_date.tm_wday = 0;		//è¿™ä¸‰ä¸ªæˆå‘˜ä¸åˆå§‹åŒ–ï¼Œmktimeç»“æœä¸ç¡®å®š
 	time_date.tm_yday = 0;
 	time_date.tm_isdst = 0;
 
-	/* ¶ÁÈ¡Ê±×öÁË +8 Ğ¡Ê±ĞŞÕı£¬Ğ´ÈëÊ±¾ÍÒª¼õ»ØÀ´£¬±£Ö¤ÉèÖÃµÄÊ±¼ä×¼È· */
+	//è¯»çš„æ—¶å€™åŠ äº†8å°æ—¶ï¼Œå†™çš„æ—¶å€™å‡å›æ¥
 	time_cnt = mktime(&time_date) - TZ_OFFSET_SEC;
 
 	RTC_SetCounter(time_cnt);
@@ -197,6 +182,7 @@ void MyRTC_SetTime(void)
 }
 
 
+//ä»RTCè¯»å‡ºæ—¶é—´åˆ°MyRTC_Time
 void MyRTC_ReadTime(void)
 {
 	time_t time_cnt;

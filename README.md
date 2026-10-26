@@ -209,7 +209,7 @@ uint32_t MyRTC_GetCounter(void)
 |---|---|
 | 编译器 | Keil MDK V5.06 update 5（ARMCC V5.06，C99） |
 | 器件 | STM32F103C8T6，SYSCLK 72MHz（HSE 8MHz × 9） |
-| 编译结果 | **0 Error(s)**，3 Warning(s)（均来自未启用的 MPU6050/MPU6500_Reg.h 原工程遗留文件） |
+| 编译结果 | **0 Error(s)**，0 Warning(s) |
 | Program Size | Code = 8524 B，RO-data = 1812 B，RW-data = 96 B，ZI-data = 1680 B |
 | Total RO | 10336 B（10.09 KB） |
 | Total RW | 1776 B（1.73 KB） |

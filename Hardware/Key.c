@@ -2,7 +2,7 @@
 #include "Delay.h"
 #include "Key.h"
 
-/* °´¼ü£ºKEY1 ½Ó PA1£¬KEY2 ½Ó PA3£¬°´ÏÂÎªµÍµçÆ½ */
+//KEY1æ¥PA1ï¼ŒKEY2æ¥PA3ï¼ŒæŒ‰ä¸‹ä¸ºä½
 #define KEY1_PIN    GPIO_Pin_1
 #define KEY2_PIN    GPIO_Pin_3
 #define KEY_PORT    GPIOA
@@ -10,9 +10,7 @@
 static uint8_t Key1Last = 1;
 static uint8_t Key2Last = 1;
 
-/**
-  * @brief  °´¼ü³õÊ¼»¯
-  */
+//åˆå§‹åŒ–
 void Key_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -25,20 +23,15 @@ void Key_Init(void)
     GPIO_Init(KEY_PORT, &GPIO_InitStructure);
 }
 
-/**
-  * @brief  ¶ÁÈ¡Ò»¸ö°´¼üµÄ°´ÏÂÊÂ¼ş£¨ÄÚ²¿Ïû¶¶£©
-  * @param  pin  °´¼üÒı½Å
-  * @param  last ±£´æÉÏÒ»´ÎµÄµçÆ½×´Ì¬
-  * @retval 1=±¾´Î°´ÏÂ£¬0=Ã»ÓĞ°´ÏÂ
-  */
+//è¯»ä¸€ä¸ªæŒ‰é”®ï¼Œåªæœ‰ä»æ¾å¼€å˜æŒ‰ä¸‹æ‰ç®—ä¸€æ¬¡
 static uint8_t Key_Read(uint16_t pin, uint8_t *last)
 {
     uint8_t raw;
 
     raw = GPIO_ReadInputDataBit(KEY_PORT, pin);
-    if (raw == 0 && *last == 1)         /* ÓÉËÉ¿ª±äÎª°´ÏÂ */
+    if (raw == 0 && *last == 1)
     {
-        Delay_ms(20);                    /* Ïû¶¶ */
+        Delay_ms(20);                     //æ¶ˆæŠ–
         if (GPIO_ReadInputDataBit(KEY_PORT, pin) == 0)
         {
             *last = 0;
@@ -50,11 +43,7 @@ static uint8_t Key_Read(uint16_t pin, uint8_t *last)
     return 0;
 }
 
-/**
-  * @brief  ¶ÁÈ¡°´¼üÖµ
-  * @retval 0=Ã»ÓĞ°´¼ü°´ÏÂ£¬1=KEY1 °´ÏÂ£¬2=KEY2 °´ÏÂ
-  * @note   ·Ç×èÈû£¬°´×¡²»·ÅÖ»·µ»ØÒ»´Î
-  */
+//è¿”å›0æ²¡æœ‰æŒ‰é”®ï¼Œ1=KEY1ï¼Œ2=KEY2ï¼ŒæŒ‰ä½ä¸æ”¾åªè¿”å›ä¸€æ¬¡
 uint8_t Key_GetNum(void)
 {
     if (Key_Read(KEY1_PIN, &Key1Last))

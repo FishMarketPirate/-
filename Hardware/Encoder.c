@@ -2,7 +2,7 @@
 #include "Delay.h"
 #include "Encoder.h"
 
-/* Ğı×ª±àÂëÆ÷£ºA Ïà PA4£¬B Ïà PA5£¬°´¼ü PA9 */
+//ç¼–ç å™¨ï¼šAç›¸PA4ï¼ŒBç›¸PA5ï¼ŒæŒ‰é”®PA9
 #define EC_a     GPIO_Pin_4
 #define EC_b     GPIO_Pin_5
 #define EC_sw    GPIO_Pin_9
@@ -11,9 +11,7 @@
 volatile int16_t Encoder_Counter = 0;
 static uint8_t Encoder_SWLast = 1;
 
-/**
-  * @brief  ±àÂëÆ÷³õÊ¼»¯£¨A/B ÏàÓÃÍâ²¿ÖĞ¶Ï¼ÆÊı£¬°´¼üÓÃÉÏÀ­ÊäÈë£©
-  */
+//åˆå§‹åŒ–ï¼šA/Bç›¸ç”¨å¤–éƒ¨ä¸­æ–­ï¼ŒæŒ‰é”®ä¸Šæ‹‰è¾“å…¥
 void Encoder_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -23,7 +21,7 @@ void Encoder_Init(void)
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 
-    /* A¡¢B ÏàºÍ°´¼ü¶¼½ÓÔÚ GPIOA£¬ÅäÖÃÎªÉÏÀ­ÊäÈë£¨Íâ²¿ÖĞ¶ÏĞèÒª£© */
+    //A/Bç›¸å’ŒæŒ‰é”®éƒ½åœ¨GPIOA
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
     GPIO_InitStructure.GPIO_Pin = EC_a | EC_b | EC_sw;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -53,25 +51,19 @@ void Encoder_Init(void)
     NVIC_Init(&NVIC_InitStruct);
 }
 
-/**
-  * @brief  ¶ÁÈ¡±àÂëÆ÷×ª¶¯Á¿£¨ÕıÏòÎªÕı¡¢·´ÏòÎª¸º£©£¬¶ÁÍêºóÇåÁã
-  */
+//è¯»è½¬åŠ¨é‡ï¼Œæ­£è½¬ä¸ºæ­£ã€åè½¬ä¸ºè´Ÿï¼Œè¯»å®Œæ¸…é›¶
 int16_t Encoder_Get(void)
 {
     int16_t Temp;
 
-    __disable_irq();                /* ·ÀÖ¹¶Á-ÇåÁã¹ı³ÌÖĞ±»Íâ²¿ÖĞ¶Ï´ò¶Ï¶ªÊı */
+    __disable_irq();        //é˜²æ­¢è¯»çš„æ—¶å€™è¢«ä¸­æ–­æ‰“æ–­
     Temp = Encoder_Counter;
     Encoder_Counter = 0;
     __enable_irq();
     return Temp;
 }
 
-/**
-  * @brief  ¶ÁÈ¡±àÂëÆ÷°´¼ü£¨PA9£©
-  * @retval 1=±¾´Î°´ÏÂ£¨±ßÑØ´¥·¢£©£¬0=Ã»ÓĞ°´ÏÂ
-  * @note   ·Ç×èÈû£º°´ÏÂÊ±²Å×ö 20ms Ïû¶¶£¬ËÉÊÖºó²Å»á²úÉúÏÂÒ»´Î´¥·¢
-  */
+//è¯»ç¼–ç å™¨æŒ‰é”®ï¼Œè¿”å›1è¡¨ç¤ºæŒ‰ä¸‹ï¼Œ0è¡¨ç¤ºæ²¡æŒ‰
 uint8_t Encoder_Key_Get(void)
 {
     uint8_t raw;
@@ -91,7 +83,7 @@ uint8_t Encoder_Key_Get(void)
     return 0;
 }
 
-/* A ÏàÏÂ½µÑØ£ºB ÏàÎªµÍ±íÊ¾·´×ª */
+//Aç›¸ä¸‹é™æ²¿ï¼ŒBç›¸ä¸ºä½æ˜¯åè½¬
 void EXTI4_IRQHandler(void)
 {
     if (EXTI_GetITStatus(EXTI_Line4) == SET)
@@ -104,7 +96,7 @@ void EXTI4_IRQHandler(void)
     }
 }
 
-/* B ÏàÏÂ½µÑØ£ºA ÏàÎªµÍ±íÊ¾Õı×ª */
+//Bç›¸ä¸‹é™æ²¿ï¼ŒAç›¸ä¸ºä½æ˜¯æ­£è½¬
 void EXTI9_5_IRQHandler(void)
 {
     if (EXTI_GetITStatus(EXTI_Line5) == SET)

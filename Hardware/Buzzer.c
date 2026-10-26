@@ -1,13 +1,11 @@
 #include "stm32f10x.h"
 #include "Buzzer.h"
 
-/* ·äÃùÆ÷½ÓÔÚ PA7£¬µÍµçÆ½Çı¶¯£¨Èı¼«¹Ü/ÓĞÔ´·äÃùÆ÷³£¼û½Ó·¨£© */
+//èœ‚é¸£å™¨æ¥PA7ï¼Œä½ç”µå¹³å“
 #define BUZZER_PORT GPIOA
 #define BUZZER_PIN  GPIO_Pin_7
 
-/**
-  * @brief  ·äÃùÆ÷³õÊ¼»¯
-  */
+//åˆå§‹åŒ–ï¼Œé»˜è®¤å…³é—­
 void Buzzer_Init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;

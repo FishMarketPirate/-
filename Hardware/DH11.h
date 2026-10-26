@@ -3,12 +3,12 @@
 
 #include "stm32f10x.h"
 
+//DHT11æ•°æ®è„šPA10
 #define dht11_high GPIO_SetBits(GPIOA, GPIO_Pin_10)
 #define dht11_low  GPIO_ResetBits(GPIOA, GPIO_Pin_10)
 #define Read_Data  GPIO_ReadInputDataBit(GPIOA, GPIO_Pin_10)
 
-/* ÎÂÊª¶ÈÊı¾İ£ºrec_data[0]=Êª¶ÈÕûÊı rec_data[1]=Êª¶ÈĞ¡Êı
- *             rec_data[2]=ÎÂ¶ÈÕûÊı rec_data[3]=ÎÂ¶ÈĞ¡Êı */
+//æ¸©æ¹¿åº¦æ•°æ®ï¼šrec_data[0]æ¹¿åº¦æ•´æ•°ã€[1]æ¹¿åº¦å°æ•°ã€[2]æ¸©åº¦æ•´æ•°ã€[3]æ¸©åº¦å°æ•°
 extern uint8_t rec_data[4];
 
 void DH11_Out_Init(void);
@@ -16,8 +16,7 @@ void DH11_In_Init(void);
 void DH11_Start(void);
 char DH11_Rec_Byte(void);
 
-/* ¶ÁÈ¡Ò»´ÎÎÂÊª¶È
- * @retval 1=¶ÁÈ¡³É¹¦ 0=Ã»ÓĞÏìÓ¦/Ğ£Ñé´íÎó£¨´ËÊ± rec_data ²»±»ĞŞ¸Ä£© */
+//è¯»ä¸€æ¬¡æ¸©æ¹¿åº¦ï¼Œ1æˆåŠŸï¼Œ0æ²¡å“åº”æˆ–æ ¡éªŒé”™è¯¯
 uint8_t DH11_Rec_Data(void);
 
 #endif

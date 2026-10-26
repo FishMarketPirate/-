@@ -5,7 +5,7 @@
 #define MPU6050_ADDRESS 0xD0
 
 
-//Ö¸¶¨µØÖ·Ğ´
+//æŒ‡å®šåœ°å€å†™
 void MPU6050_WriteReg(uint8_t RegAddress, uint8_t Data)
 {
 	MYI2C_Start();
@@ -26,7 +26,7 @@ uint8_t MPU6050_ReadReg(uint8_t RegAddress)
 	MYI2C_ReceiveAck();
 	MYI2C_SendByte(RegAddress);
 	MYI2C_ReceiveAck();
-	//ÖØ¸´ÆğÊ¼
+	//é‡å¤èµ·å§‹
 	MYI2C_Start();
 	MYI2C_SendByte(MPU6050_ADDRESS|0x01);
 	MYI2C_ReceiveAck();
@@ -71,7 +71,8 @@ int16_t MPU6050_Get(int16_t* AccX,int16_t* AccY,int16_t* AccZ,
 	DataH = MPU6050_ReadReg(MPU6050_GYRO_ZOUT_H);
 	DataL = MPU6050_ReadReg(MPU6050_GYRO_ZOUT_L);
 	*GyroZ = (DataH<<8)|DataL;
-	
+
+	return 0;
 }
 
 

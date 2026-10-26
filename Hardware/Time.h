@@ -3,27 +3,27 @@
 
 #include "stm32f10x.h"
 
-/* RTC Ê±¼ä½á¹¹Ìå£¨Äê·İÎªÍêÕûÄê·İ£¬Èç 2026£© */
+//æ—¶é—´ç»“æ„ä½“ï¼Œå¹´ä»½æ˜¯å®Œæ•´å¹´ä»½ï¼ˆå¦‚ 2026ï¼‰
 typedef struct
 {
     uint16_t year;
     uint8_t  month;
     uint8_t  day;
-    uint8_t  week;     /* 0=ÖÜÈÕ 1=ÖÜÒ» ... 6=ÖÜÁù */
+    uint8_t  week;     //0å‘¨æ—¥ 1å‘¨ä¸€ ... 6å‘¨å…­
     uint8_t  hour;
     uint8_t  min;
     uint8_t  sec;
 } RTC_TimeTypeDef;
 
-/* ÄÖÖÓ½á¹¹Ìå */
+//é—¹é’Ÿç»“æ„ä½“
 typedef struct
 {
     uint8_t  hour;
     uint8_t  min;
-    uint8_t  enable;   /* 0=¹Ø±Õ 1=¿ªÆô */
+    uint8_t  enable;   //0å…³ 1å¼€
 } ALARM_TypeDef;
 
-/* ĞŞ¸ÄÊ±¼äÊ±ÓÃµ½µÄ×Ö¶Î±àºÅ */
+//ä¿®æ”¹æ—¶é—´æ—¶çš„å­—æ®µç¼–å·
 #define TIME_FIELD_YEAR       0
 #define TIME_FIELD_MONTH      1
 #define TIME_FIELD_DAY        2
@@ -32,25 +32,25 @@ typedef struct
 #define TIME_FIELD_SEC        5
 #define TIME_FIELD_NUM        6
 
-/* ĞŞ¸ÄÄÖÖÓÊ±ÓÃµ½µÄ×Ö¶Î±àºÅ */
+//ä¿®æ”¹é—¹é’Ÿæ—¶çš„å­—æ®µç¼–å·
 #define ALARM_FIELD_HOUR      0
 #define ALARM_FIELD_MIN       1
 #define ALARM_FIELD_ENABLE    2
 #define ALARM_FIELD_NUM       3
 
-extern RTC_TimeTypeDef now_time;    /* µ±Ç°Ê±¼ä */
-extern ALARM_TypeDef alarm_cfg;     /* ÄÖÖÓÉèÖÃ */
+extern RTC_TimeTypeDef now_time;    //å½“å‰æ—¶é—´
+extern ALARM_TypeDef alarm_cfg;     //é—¹é’Ÿè®¾ç½®
 
 uint8_t IsLeapYear(uint16_t y);
 uint8_t Time_DaysInMonth(uint16_t y, uint8_t m);
 uint8_t Time_WeekDay(uint16_t y, uint8_t m, uint8_t d);
 
-void Time_Init(void);                                              /* ³õÊ¼»¯£¬¶Á³öÊ±¼äºÍÄÖÖÓ */
-void Time_Read(RTC_TimeTypeDef *t);                                /* ´Ó RTC ¶ÁÈ¡µ±Ç°Ê±¼ä */
-void Time_Set(RTC_TimeTypeDef *t);                                 /* °ÑÊ±¼äĞ´Èë RTC */
-void Time_Adjust(RTC_TimeTypeDef *t, uint8_t field, int16_t step); /* µ÷ÕûÊ±¼ä×Ö¶Î */
-void Alarm_Adjust(ALARM_TypeDef *a, uint8_t field, int16_t step);  /* µ÷ÕûÄÖÖÓ×Ö¶Î */
-void Alarm_Load(void);                                             /* ´Óºó±¸¼Ä´æÆ÷¶ÁÄÖÖÓ */
-void Alarm_Save(void);                                             /* °ÑÄÖÖÓ±£´æµ½ºó±¸¼Ä´æÆ÷ */
+void Time_Init(void);        //åˆå§‹åŒ–ï¼Œè¯»å‡ºæ—¶é—´å’Œé—¹é’Ÿ
+void Time_Read(RTC_TimeTypeDef *t);    //è¯»å½“å‰æ—¶é—´
+void Time_Set(RTC_TimeTypeDef *t);     //æŠŠæ—¶é—´å†™å…¥RTC
+void Time_Adjust(RTC_TimeTypeDef *t, uint8_t field, int16_t step);   //è°ƒæ•´æ—¶é—´å­—æ®µ
+void Alarm_Adjust(ALARM_TypeDef *a, uint8_t field, int16_t step);    //è°ƒæ•´é—¹é’Ÿå­—æ®µ
+void Alarm_Load(void);       //ä»åå¤‡å¯„å­˜å™¨è¯»é—¹é’Ÿ
+void Alarm_Save(void);       //æŠŠé—¹é’Ÿå­˜åˆ°åå¤‡å¯„å­˜å™¨
 
 #endif
