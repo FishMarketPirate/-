@@ -25,7 +25,7 @@ static RTC_TimeTypeDef edit_time;
 static ALARM_TypeDef edit_alarm;
 static uint8_t edit_field = 0;
 
-
+//修改1
 
 /* ��ʪ�� */
 static uint8_t temp_value = 0;
